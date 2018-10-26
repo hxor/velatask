@@ -47646,6 +47646,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         resetForm: function resetForm() {
             this.task.title = '';
             this.task.prior = '';
+            this.edit = false;
         },
         createPagination: function createPagination(meta, links) {
             var pagination = {
@@ -47941,7 +47942,8 @@ var render = function() {
                   "button",
                   {
                     staticClass: "btn btn-secondary",
-                    attrs: { type: "button", "data-dismiss": "modal" }
+                    attrs: { type: "button", "data-dismiss": "modal" },
+                    on: { click: _vm.resetForm }
                   },
                   [_vm._v("Close")]
                 ),

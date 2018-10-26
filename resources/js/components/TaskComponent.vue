@@ -79,7 +79,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="resetForm">Close</button>
                     <button type="button" class="btn btn-primary" @click="saveTask">Submit</button>
                 </div>
                 </div>
@@ -188,6 +188,7 @@
             resetForm() {
                 this.task.title = '';
                 this.task.prior = '';
+                this.edit = false;
             },
 
             createPagination(meta, links) {
