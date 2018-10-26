@@ -47549,10 +47549,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return {
             tasks: [],
             task: {
+                id: '',
                 title: '',
                 prior: ''
             },
-            errors: []
+            errors: [],
+            edit: false
         };
     },
 
@@ -47568,26 +47570,52 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.errors = [];
             $("#modal").modal("show");
         },
-        createTask: function createTask() {
+        initUpdateTask: function initUpdateTask(task) {
+            this.task.id = task.id;
+            this.task.title = task.title;
+            this.task.prior = task.prior;
+            this.edit = true;
+
+            this.initTask();
+        },
+        saveTask: function saveTask() {
             var _this2 = this;
 
-            axios.post('/task', {
-                title: this.task.title,
-                prior: this.task.prior
-            }).then(function (response) {
-                _this2.resetForm();
-
-                $("#modal").modal("hide");
-            }).catch(function (error) {
-                // console.log(error.response.data);
-                _this2.errors = [];
-                if (error.response.data.errors.title) {
-                    _this2.errors.push(error.response.data.errors.title[0]);
-                }
-                if (error.response.data.errors.prior) {
-                    _this2.errors.push(error.response.data.errors.prior[0]);
-                }
-            });
+            if (this.edit === false) {
+                axios.post('/task', {
+                    title: this.task.title,
+                    prior: this.task.prior
+                }).then(function (response) {
+                    _this2.resetForm();
+                    $("#modal").modal("hide");
+                }).catch(function (error) {
+                    // console.log(error.response.data);
+                    _this2.errors = [];
+                    if (error.response.data.errors.title) {
+                        _this2.errors.push(error.response.data.errors.title[0]);
+                    }
+                    if (error.response.data.errors.prior) {
+                        _this2.errors.push(error.response.data.errors.prior[0]);
+                    }
+                });
+            } else {
+                axios.patch('/task/' + this.task.id, {
+                    title: this.task.title,
+                    prior: this.task.prior
+                }).then(function (response) {
+                    _this2.getTasks();
+                    _this2.resetForm();
+                    $("#modal").modal("hide");
+                }).catch(function (error) {
+                    _this2.errors = [];
+                    if (error.response.data.errors.title) {
+                        _this2.errors.push(error.response.data.errors.title[0]);
+                    }
+                    if (error.response.data.errors.prior) {
+                        _this2.errors.push(error.response.data.errors.prior[0]);
+                    }
+                });
+            }
         },
         resetForm: function resetForm() {
             this.task.title = '';
@@ -47647,7 +47675,24 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(task.prior))]),
                     _vm._v(" "),
-                    _vm._m(1, true)
+                    _c("td", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-default btn-sm",
+                          on: {
+                            click: function($event) {
+                              _vm.initUpdateTask(task)
+                            }
+                          }
+                        },
+                        [_vm._v("Edit")]
+                      ),
+                      _vm._v(" "),
+                      _c("button", { staticClass: "btn btn-danger btn-sm" }, [
+                        _vm._v("Delete")
+                      ])
+                    ])
                   ])
                 })
               )
@@ -47675,7 +47720,7 @@ var render = function() {
           { staticClass: "modal-dialog", attrs: { role: "document" } },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(2),
+              _vm._m(1),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _vm.errors.length > 0
@@ -47796,7 +47841,7 @@ var render = function() {
                   {
                     staticClass: "btn btn-primary",
                     attrs: { type: "button" },
-                    on: { click: _vm.createTask }
+                    on: { click: _vm.saveTask }
                   },
                   [_vm._v("Submit")]
                 )
@@ -47823,16 +47868,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", { attrs: { scope: "col" } })
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("button", { staticClass: "btn btn-default btn-sm" }, [_vm._v("Edit")]),
-      _vm._v(" "),
-      _c("button", { staticClass: "btn btn-danger btn-sm" }, [_vm._v("Delete")])
     ])
   },
   function() {

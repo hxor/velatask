@@ -26,7 +26,7 @@
                                     <td>{{ task.title }}</td>
                                     <td>{{ task.prior }}</td>
                                     <td>
-                                        <button class="btn btn-default btn-sm">Edit</button>
+                                        <button class="btn btn-default btn-sm" @click="initUpdateTask(task)">Edit</button>
                                         <button class="btn btn-danger btn-sm">Delete</button>
                                     </td>
                                 </tr>
@@ -70,7 +70,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" @click="createTask">Submit</button>
+                    <button type="button" class="btn btn-primary" @click="saveTask">Submit</button>
                 </div>
                 </div>
             </div>
@@ -84,10 +84,12 @@
             return {
                 tasks: [],
                 task: {
+                    id: '',
                     title: '',
                     prior: ''
                 },
-                errors: []
+                errors: [],
+                edit: false
             }
         },
         methods: {
@@ -105,26 +107,55 @@
 
             },
 
-            createTask() {
-                axios.post('/task', {
-                    title: this.task.title,
-                    prior: this.task.prior
-                })
-                .then(response => {
-                    this.resetForm();
+            initUpdateTask(task) {
+                this.task.id = task.id;
+                this.task.title = task.title;
+                this.task.prior = task.prior;
+                this.edit = true;
 
-                    $("#modal").modal("hide");
-                })
-                .catch(error => {
-                    // console.log(error.response.data);
-                    this.errors = [];
-                    if (error.response.data.errors.title) {
-                        this.errors.push(error.response.data.errors.title[0]);
-                    }
-                    if (error.response.data.errors.prior) {
-                        this.errors.push(error.response.data.errors.prior[0]);
-                    }
-                })
+                this.initTask();
+            },
+
+            saveTask() {
+                if (this.edit === false) {
+                    axios.post('/task', {
+                        title: this.task.title,
+                        prior: this.task.prior
+                    })
+                    .then(response => {
+                        this.resetForm();
+                        $("#modal").modal("hide");
+                    })
+                    .catch(error => {
+                        // console.log(error.response.data);
+                        this.errors = [];
+                        if (error.response.data.errors.title) {
+                            this.errors.push(error.response.data.errors.title[0]);
+                        }
+                        if (error.response.data.errors.prior) {
+                            this.errors.push(error.response.data.errors.prior[0]);
+                        }
+                    });
+                } else {
+                    axios.patch('/task/' + this.task.id, {
+                        title: this.task.title,
+                        prior: this.task.prior
+                    })
+                    .then(response => {
+                        this.getTasks();
+                        this.resetForm();
+                        $("#modal").modal("hide");
+                    })
+                    .catch(error => {
+                        this.errors = [];
+                        if (error.response.data.errors.title) {
+                            this.errors.push(error.response.data.errors.title[0]);
+                        }
+                        if (error.response.data.errors.prior) {
+                            this.errors.push(error.response.data.errors.prior[0]);
+                        }
+                    });
+                }
             },
 
             resetForm() {
