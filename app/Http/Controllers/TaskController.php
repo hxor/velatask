@@ -40,7 +40,21 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'title' => 'required|max:255',
+            'prior' => 'required',
+        ]);
+
+        $task = Task::create([
+            'title'     => request('title'),
+            'prior'     => request('prior'),
+            'user_id'   => request()->user()->id
+        ]);
+
+        return response()->json([
+            'task'    => $task,
+            'message' => 'Success'
+        ], 200);
     }
 
     /**
