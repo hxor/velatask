@@ -47543,6 +47543,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -47553,17 +47563,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 title: '',
                 prior: ''
             },
+            pagination: {},
             errors: [],
             edit: false
         };
     },
 
     methods: {
-        getTasks: function getTasks() {
+        getTasks: function getTasks(page_url) {
             var _this = this;
 
-            axios.get('/task').then(function (response) {
-                _this.tasks = response.data.tasks;
+            page_url = page_url || '/task';
+            axios.get(page_url).then(function (response) {
+                console.log(response.data);
+                _this.createPagination(response.data.meta, response.data.links);
+                _this.tasks = response.data.data;
             });
         },
         initTask: function initTask() {
@@ -47632,6 +47646,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         resetForm: function resetForm() {
             this.task.title = '';
             this.task.prior = '';
+        },
+        createPagination: function createPagination(meta, links) {
+            var pagination = {
+                current_page: meta.current_page,
+                last_page: meta.last_page,
+                next_page_url: links.next,
+                prev_page_url: links.prev
+            };
+
+            this.pagination = pagination;
         }
     },
     mounted: function mounted() {
@@ -47716,6 +47740,71 @@ var render = function() {
                     ])
                   ])
                 })
+              )
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-footer text-muted" }, [
+            _c("ul", { staticClass: "pagination" }, [
+              _c(
+                "li",
+                {
+                  staticClass: "page-item",
+                  class: [{ disabled: !_vm.pagination.prev_page_url }]
+                },
+                [
+                  _c(
+                    "a",
+                    {
+                      staticClass: "page-link",
+                      attrs: { href: "#" },
+                      on: {
+                        click: function($event) {
+                          _vm.getTasks(_vm.pagination.prev_page_url)
+                        }
+                      }
+                    },
+                    [_vm._v("Previous")]
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c("li", { staticClass: "page-item disabled" }, [
+                _c(
+                  "a",
+                  { staticClass: "page-link text-dark", attrs: { href: "#" } },
+                  [
+                    _vm._v(
+                      "Page " +
+                        _vm._s(_vm.pagination.current_page) +
+                        " of " +
+                        _vm._s(_vm.pagination.last_page)
+                    )
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c(
+                "li",
+                {
+                  staticClass: "page-item",
+                  class: [{ disabled: !_vm.pagination.next_page_url }]
+                },
+                [
+                  _c(
+                    "a",
+                    {
+                      staticClass: "page-link",
+                      attrs: { href: "#" },
+                      on: {
+                        click: function($event) {
+                          _vm.getTasks(_vm.pagination.next_page_url)
+                        }
+                      }
+                    },
+                    [_vm._v("Next")]
+                  )
+                ]
               )
             ])
           ])

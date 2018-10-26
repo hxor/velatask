@@ -33,6 +33,16 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <div class="card-footer text-muted">
+                        <ul class="pagination">
+                            <li v-bind:class="[{disabled: !pagination.prev_page_url}]" class="page-item"><a class="page-link" href="#" @click="getTasks(pagination.prev_page_url)">Previous</a></li>
+
+                            <li class="page-item disabled"><a class="page-link text-dark" href="#">Page {{ pagination.current_page }} of {{ pagination.last_page }}</a></li>
+
+                            <li v-bind:class="[{disabled: !pagination.next_page_url}]" class="page-item"><a class="page-link" href="#" @click="getTasks(pagination.next_page_url)">Next</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -88,16 +98,20 @@
                     title: '',
                     prior: ''
                 },
+                pagination: {},
                 errors: [],
                 edit: false
             }
         },
         methods: {
 
-            getTasks() {
-                axios.get('/task')
+            getTasks(page_url) {
+                page_url = page_url || '/task';
+                axios.get(page_url)
                     .then(response => {
-                        this.tasks = response.data.tasks;
+                        console.log(response.data);
+                        this.createPagination(response.data.meta, response.data.links);
+                        this.tasks = response.data.data;
                     });
             },
 
@@ -174,6 +188,17 @@
             resetForm() {
                 this.task.title = '';
                 this.task.prior = '';
+            },
+
+            createPagination(meta, links) {
+                let pagination = {
+                    current_page: meta.current_page,
+                    last_page: meta.last_page,
+                    next_page_url: links.next,
+                    prev_page_url: links.prev
+                }
+
+                this.pagination = pagination;
             }
         },
         mounted() {

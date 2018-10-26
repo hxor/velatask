@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Task;
+use App\Http\Resources\TaskResource;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -19,10 +20,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::where(['user_id' => request()->user()->id])->get();
-        return response()->json([
-            'tasks'    => $tasks,
-        ], 200);
+        $tasks = Task::where(['user_id' => request()->user()->id])->paginate(5);
+        return TaskResource::collection($tasks);
     }
 
     /**
