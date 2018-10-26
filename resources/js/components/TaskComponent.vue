@@ -11,7 +11,27 @@
                     </div>
 
                     <div class="card-body">
-
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Task</th>
+                                    <th scope="col">Level</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(task, index) in tasks" :key="index">
+                                    <th scope="row">{{ index+1 }}</th>
+                                    <td>{{ task.title }}</td>
+                                    <td>{{ task.prior }}</td>
+                                    <td>
+                                        <button class="btn btn-default btn-sm">Edit</button>
+                                        <button class="btn btn-danger btn-sm">Delete</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -71,6 +91,14 @@
             }
         },
         methods: {
+
+            getTasks() {
+                axios.get('/task')
+                    .then(response => {
+                        this.tasks = response.data.tasks;
+                    });
+            },
+
             initTask() {
                 this.errors = [];
                 $("#modal").modal("show");
@@ -105,7 +133,7 @@
             }
         },
         mounted() {
-
+            this.getTasks();
         }
     }
 </script>

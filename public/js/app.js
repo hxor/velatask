@@ -47523,6 +47523,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -47537,28 +47557,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     methods: {
+        getTasks: function getTasks() {
+            var _this = this;
+
+            axios.get('/task').then(function (response) {
+                _this.tasks = response.data.tasks;
+            });
+        },
         initTask: function initTask() {
             this.errors = [];
             $("#modal").modal("show");
         },
         createTask: function createTask() {
-            var _this = this;
+            var _this2 = this;
 
             axios.post('/task', {
                 title: this.task.title,
                 prior: this.task.prior
             }).then(function (response) {
-                _this.resetForm();
+                _this2.resetForm();
 
                 $("#modal").modal("hide");
             }).catch(function (error) {
                 // console.log(error.response.data);
-                _this.errors = [];
+                _this2.errors = [];
                 if (error.response.data.errors.title) {
-                    _this.errors.push(error.response.data.errors.title[0]);
+                    _this2.errors.push(error.response.data.errors.title[0]);
                 }
                 if (error.response.data.errors.prior) {
-                    _this.errors.push(error.response.data.errors.prior[0]);
+                    _this2.errors.push(error.response.data.errors.prior[0]);
                 }
             });
         },
@@ -47567,7 +47594,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.task.prior = '';
         }
     },
-    mounted: function mounted() {}
+    mounted: function mounted() {
+        this.getTasks();
+    }
 });
 
 /***/ }),
@@ -47602,7 +47631,28 @@ var render = function() {
             _vm._v("\n                    Tasks List\n                ")
           ]),
           _vm._v(" "),
-          _c("div", { staticClass: "card-body" })
+          _c("div", { staticClass: "card-body" }, [
+            _c("table", { staticClass: "table table-bordered table-striped" }, [
+              _vm._m(0),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.tasks, function(task, index) {
+                  return _c("tr", { key: index }, [
+                    _c("th", { attrs: { scope: "row" } }, [
+                      _vm._v(_vm._s(index + 1))
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(task.title))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(task.prior))]),
+                    _vm._v(" "),
+                    _vm._m(1, true)
+                  ])
+                })
+              )
+            ])
+          ])
         ])
       ])
     ]),
@@ -47625,7 +47675,7 @@ var render = function() {
           { staticClass: "modal-dialog", attrs: { role: "document" } },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(0),
+              _vm._m(2),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _vm.errors.length > 0
@@ -47759,6 +47809,32 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Task")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Level")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } })
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", [
+      _c("button", { staticClass: "btn btn-default btn-sm" }, [_vm._v("Edit")]),
+      _vm._v(" "),
+      _c("button", { staticClass: "btn btn-danger btn-sm" }, [_vm._v("Delete")])
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
