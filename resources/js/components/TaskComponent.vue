@@ -27,7 +27,7 @@
                                     <td>{{ task.prior }}</td>
                                     <td>
                                         <button class="btn btn-default btn-sm" @click="initUpdateTask(task)">Edit</button>
-                                        <button class="btn btn-danger btn-sm">Delete</button>
+                                        <button class="btn btn-danger btn-sm" @click="deleteTask(task)">Delete</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -154,6 +154,19 @@
                         if (error.response.data.errors.prior) {
                             this.errors.push(error.response.data.errors.prior[0]);
                         }
+                    });
+                }
+            },
+
+            deleteTask(task) {
+                let desicion = confirm('Are you sure?');
+                if (desicion === true) {
+                    axios.delete('/task/' + task.id)
+                    .then(response => {
+                        this.getTasks();
+                    })
+                    .catch(error => {
+                        console.log(error);
                     });
                 }
             },

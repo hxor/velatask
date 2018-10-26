@@ -47617,6 +47617,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 });
             }
         },
+        deleteTask: function deleteTask(task) {
+            var _this3 = this;
+
+            var desicion = confirm('Are you sure?');
+            if (desicion === true) {
+                axios.delete('/task/' + task.id).then(function (response) {
+                    _this3.getTasks();
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        },
         resetForm: function resetForm() {
             this.task.title = '';
             this.task.prior = '';
@@ -47689,9 +47701,18 @@ var render = function() {
                         [_vm._v("Edit")]
                       ),
                       _vm._v(" "),
-                      _c("button", { staticClass: "btn btn-danger btn-sm" }, [
-                        _vm._v("Delete")
-                      ])
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-danger btn-sm",
+                          on: {
+                            click: function($event) {
+                              _vm.deleteTask(task)
+                            }
+                          }
+                        },
+                        [_vm._v("Delete")]
+                      )
                     ])
                   ])
                 })
